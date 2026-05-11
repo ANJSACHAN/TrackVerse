@@ -1,0 +1,42 @@
+import express from 'express';
+import cors from 'cors';
+import authRoutes from "./routes/User.js";
+import tripRoutes from "./routes/Trip.js";
+import errorHandler from './middlewares/errorHandler.js';
+import itineryRoutes from './routes/Itinerary.js'
+import eventRoutes from "./routes/Events.js"
+const app = express();
+
+
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://maestro-map.vercel.app", 
+      "https://maestromap.vercel.app"   
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"], // Explicitly added OPTIONS
+    credentials: true
+  })
+);
+
+// app.options("*", cors());
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Routes
+app.use("/auth", authRoutes);
+app.use("/trip", tripRoutes);
+app.use('/itinerary',itineryRoutes)
+
+app.use("/myApi",eventRoutes);
+// Error Handle
+app.use(errorHandler);
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+        console.log(`🚀 Server is running on http://localhost:${PORT}`);
+    });
+export default app;
